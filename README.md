@@ -1,7 +1,7 @@
 # Music-Player-for-VK
-Small Music Player for russian social web VK(Вконтакте).
+Small music player for Russian social web VK(Вконтакте).
 
-In this app you can search all music in VK, play it before download, and download it.
+In this app you can search music in VK, play music before download, and download it.
 
 Written with using MVVM Pattern (It has not model because VkNet Library give it)
 
