@@ -3,7 +3,7 @@ Small Music Player for russian social web VK(Вконтакте).
 
 In this app you can search all music in VK, play it before download, and download it.
 
-Written with using MVVM Pattern (It has no model because VkNet Library give it)
+Written with using MVVM Pattern (It has not model because VkNet Library give it)
 
 All controls style stored in Resources folder, so you can easily change them.
 
