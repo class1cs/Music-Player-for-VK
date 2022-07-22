@@ -1,0 +1,204 @@
+﻿<Window
+    x:Class="WpfApp21.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WpfApp21"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WpfApp21.ViewModels"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    Title="MusicDownloader"
+    Width="400"
+    Height="280"
+    MinWidth="400"
+    MinHeight="280"
+    MaxHeight="400"
+    MaxWidth="580"
+    Name="MyWindow"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d"
+   >
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        
+        <Style TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="DemiBold"/>
+        </Style>
+        <Style TargetType="{x:Type DataGridCell}">
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="TextBlock.TextWrapping" Value="NoWrap"/>
+        </Style>
+     
+    </Window.Resources>
+
+
+
+    <Grid Name="MyGrid">
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="26" />
+            <RowDefinition Height="{Binding DownloadingHeight}"></RowDefinition>
+            <RowDefinition Height="{Binding PlayerHeight}">
+               
+            </RowDefinition>
+            <RowDefinition Height="203*"/>
+
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="3"   >
+            <DataGrid
+                EnableColumnVirtualization="True"
+                HeadersVisibility="Column"
+                
+                Margin="5"
+                Name="songGrid"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutoGenerateColumns="False"
+                BorderThickness="1"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                EnableRowVirtualization="True"
+                IsReadOnly="True"
+                ItemsSource="{Binding AudioInfo}"
+                SelectionMode="Single"
+                BorderBrush="Black"
+                >
+                <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick"
+                    Command="{Binding PlayCommand}"
+                    CommandParameter="{Binding ElementName=songGrid, Path=SelectedItem}"/>
+                </DataGrid.InputBindings>
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn
+                        Width="5*"
+                        
+                        Binding="{Binding Artist, IsAsync=True}"
+                        Header="Автор" />
+                    <DataGridTextColumn
+                        Width="5*"
+                       
+                        Binding="{Binding Title, IsAsync=True}"
+                        Header="Название" />
+                    <DataGridTemplateColumn x:Name="song" Width="2*" Header="Скачать">
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                
+                                <Button Style="{StaticResource DownloadButton}" Command="{Binding ElementName=MyWindow, Path=DataContext.DownloadCommand}"  CommandParameter="{Binding}">
+                                    <Image Height="16" Source="/Icons/DownloadIcon.png"/>
+
+                                </Button>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Grid>
+        
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="40"  />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Style="{StaticResource BaseButton}"
+                Grid.Column="1"
+                
+                
+                Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=queryRequest, Path=Text}">
+                <ContentControl
+                            Height="25"
+                            
+                            VerticalAlignment="Center"
+                            Background="#101010"
+                            Content="{StaticResource SearchIcon}"
+                             />
+    
+            </Button>
+            <TextBox
+               Text="{Binding SearchRequest, UpdateSourceTrigger=PropertyChanged}"
+                Margin="5,5,0,0"
+                VerticalAlignment="Center"
+                BorderThickness="1"
+                BorderBrush="Black"
+                Style="{StaticResource PlaceholderTextBoxStyle}"
+                Tag="Введите название композиции"
+                Name="queryRequest"
+                TextWrapping="NoWrap" FontFamily="Consolas"
+                                    FontWeight="DemiBold">
+                
+            </TextBox>
+        </Grid>
+        <Grid Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="236"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar  Grid.Column="1" Margin="5,10,5,10" Value="{Binding Progress}"/>
+            <StackPanel Margin="5,0,0,0" Grid.Column="0">
+                <TextBlock TextTrimming="CharacterEllipsis"  VerticalAlignment="Center"  Text="{Binding DownloadingTrack, StringFormat=Музыка: {0}}"/>
+                <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Progress, StringFormat=Прогресс: {0}%}"/>
+            </StackPanel>
+
+        </Grid>
+        <Grid Grid.Row="2">
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="28*"/>
+
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="195*"/>
+
+                    <ColumnDefinition Width="94*"/>
+                    <ColumnDefinition Width="38*"  />
+                    <ColumnDefinition Width="33.035"/>
+                    <ColumnDefinition Width="39.623" />
+                </Grid.ColumnDefinitions>
+                <Slider Margin="5,5,0,0"  IsEnabled="{Binding EnableSlider, IsAsync=True}" Value="{Binding CurrentTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding SongLength, IsAsync=True}"  Minimum="0" TickFrequency="1"   x:Name="positionChanger"   Grid.Column="0">
+
+                    <i:Interaction.Triggers>
+
+                        <i:EventTrigger EventName="ValueChanged">
+                            <i:InvokeCommandAction CommandParameter="{Binding ElementName=positionChanger, Path=Value, IsAsync=True}" Command="{Binding ChangePosition, IsAsync=True}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                </Slider>
+
+                <Button Foreground="White" Style="{StaticResource BaseButton}"  Content="{Binding PauseOrPlay}" Command="{Binding StopOrPlayCommand}" Grid.Column="3"   HorizontalAlignment="Center" Height="30" Width="40" VerticalAlignment="Center">
+
+
+                </Button>
+                <TextBlock TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Text="{Binding Time}"/>
+                <Button Foreground="White"  Style="{StaticResource BaseButton}" Command="{Binding HidePlayer}" Grid.Column="4" Content="X"  HorizontalAlignment="Stretch" Height="30" Width="40"     VerticalAlignment="Center"/>
+                <TextBlock  TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Text="{Binding PlayingSong}" />
+            </Grid>
+        </Grid>
+    </Grid>
+
+
+
+
+</Window>
